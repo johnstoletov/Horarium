@@ -1,8 +1,9 @@
 name: Pack new version
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
 
 jobs:
   build:
