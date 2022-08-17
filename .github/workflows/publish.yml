@@ -16,4 +16,5 @@ jobs:
         env:
           NUGET_APIKEY: ${{secrets.NUGET_APIKEY}}
       - run: |
+          cd src \
           dotnet build Horarium.sln -c Release
