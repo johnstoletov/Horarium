@@ -25,6 +25,7 @@ jobs:
       - run: |
           cd src 
           dotnet build Horarium.sln -c Release
+        name: dotnet build
   
   test:
     needs: [build]
@@ -39,12 +40,12 @@ jobs:
       - name: check mongo
         run: |
           sleep 5
-          mongo --host mongodb --eval "db.version()"
+          mongo --host localhost --eval "db.version()"
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '2.2.x' # SDK Version to use.
         env:
-          MONGO_ADDRESS: mongodb
+          MONGO_ADDRESS: localhost
       - run: |
           cd src 
           dotnet test Horarium.Test/Horarium.Test.csproj --no-restore
