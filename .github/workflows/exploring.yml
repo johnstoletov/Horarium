@@ -64,9 +64,9 @@ jobs:
           cd src
           dotnet pack Horarium/Horarium.csproj -c Release  /p:PackageVersion=v1.1.2
       - name: pack horarium
-          run: |
-            cd src
-            dotnet pack Horarium.Mongo/Horarium.Mongo.csproj -c Release  /p:PackageVersion=v1.1.2
+        run: |
+          cd src
+          dotnet pack Horarium.Mongo/Horarium.Mongo.csproj -c Release  /p:PackageVersion=v1.1.2
       - name: pack horarium
           run: |
             cd src
