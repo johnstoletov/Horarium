@@ -15,3 +15,40 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '2.2.x' # SDK Version to use.
+      - run: |
+          cd src 
+          dotnet build Horarium.sln -c Release
+  
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:4.0
+        options: >-
+          --smallfiles
+        ports:
+          - 27017:27017
+    steps:
+      - uses: actions/checkout@v3
+      - name: check mongo
+        run: |
+          sleep 5
+          mongo --host mongodb --eval "db.version()"
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '2.2.x' # SDK Version to use.
+        env:
+          MONGO_ADDRESS: mongodb
+      - run: |
+          cd src 
+          dotnet test Horarium.Test/Horarium.Test.csproj --no-restore
+          DataBase=MongoDB dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj --no-restore
+          DataBase=Memory dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj --no-restore
