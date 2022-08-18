@@ -22,10 +22,14 @@ jobs:
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '2.2.x' # SDK Version to use.
-      - run: |
+      - name: dotnet build
+        run: |
           cd src 
           dotnet build Horarium.sln -c Release
-        name: dotnet build
+      - name: ls
+        run: |
+          ls -a
+        
   
   test:
     needs: [build]
@@ -46,8 +50,16 @@ jobs:
           dotnet-version: '2.2.x' # SDK Version to use.
         env:
           MONGO_ADDRESS: localhost
-      - run: |
+      - name: ls
+          run: |
+            ls -a
+      - name: run tests
+        run: |
           cd src 
           dotnet test Horarium.Test/Horarium.Test.csproj --no-restore
+      - name: run MongoDB tests
+        run: |
           DataBase=MongoDB dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj --no-restore
+      - name: run InMemory tests
+        run: |
           DataBase=Memory dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj --no-restore
