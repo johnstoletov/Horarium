@@ -1,20 +1,6 @@
 name: GitHub Actions Demo
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
   build:
     runs-on: ubuntu-latest
     steps:
@@ -29,8 +15,7 @@ jobs:
       - name: ls
         run: |
           ls -a
-        
-  
+          
   test:
     needs: [build]
     runs-on: ubuntu-latest
@@ -56,10 +41,50 @@ jobs:
       - name: run tests
         run: |
           cd src 
-          dotnet test Horarium.Test/Horarium.Test.csproj --no-restore
+          dotnet test Horarium.Test/Horarium.Test.csproj -c Release --no-restore
       - name: run MongoDB tests
         run: |
-          DataBase=MongoDB dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj --no-restore
+          cd src 
+          DataBase=MongoDB dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj -c Release --no-restore
       - name: run InMemory tests
         run: |
-          DataBase=Memory dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj --no-restore
+          cd src 
+          DataBase=Memory dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj -c Release --no-restore
+          
+  pack:
+    needs: [build,test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '2.2.x' # SDK Version to use.
+      - name: pack horarium
+        run: |
+          cd src
+          dotnet pack Horarium/Horarium.csproj -c Release  /p:PackageVersion=v1.1.2
+      - name: pack horarium
+          run: |
+            cd src
+            dotnet pack Horarium.Mongo/Horarium.Mongo.csproj -c Release  /p:PackageVersion=v1.1.2
+      - name: pack horarium
+          run: |
+            cd src
+            dotnet pack Horarium.AspNetCore/Horarium.AspNetCore.csproj -c Release  /p:PackageVersion=v1.1.2
+            
+  publish:
+    needs: [ build,test,pack ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '2.2.x' # SDK Version to use.
+      - name: ls packs
+          run: |
+            cd src/Horarium
+            ls -a
+      - name: publish
+        run: |
+          cd src
+          dotnet nuget push **/Horarium.*.nupkg -k ${{secrets.GITHUB_TOKEN}} -s https://www.nuget.org
