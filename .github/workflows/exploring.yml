@@ -62,15 +62,15 @@ jobs:
       - name: pack Horarium
         run: |
           cd src
-          dotnet pack Horarium/Horarium.csproj -c Release  /p:PackageVersion=v1.1.2
+          dotnet pack Horarium/Horarium.csproj -c Release  /p:PackageVersion=1.1.2
       - name: pack Horarium.Mongo
         run: |
           cd src
-          dotnet pack Horarium.Mongo/Horarium.Mongo.csproj -c Release  /p:PackageVersion=v1.1.2
+          dotnet pack Horarium.Mongo/Horarium.Mongo.csproj -c Release  /p:PackageVersion=1.1.2
       - name: pack Horarium.AspNetCore
         run: |
           cd src
-          dotnet pack Horarium.AspNetCore/Horarium.AspNetCore.csproj -c Release  /p:PackageVersion=v1.1.2
+          dotnet pack Horarium.AspNetCore/Horarium.AspNetCore.csproj -c Release  /p:PackageVersion=1.1.2
             
   publish:
     needs: [ build,test,pack ]
