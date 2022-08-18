@@ -51,7 +51,7 @@ jobs:
         env:
           MONGO_ADDRESS: localhost
       - name: ls
-          run: |
+        run: |
             ls -a
       - name: run tests
         run: |
