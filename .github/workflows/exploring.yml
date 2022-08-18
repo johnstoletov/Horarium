@@ -41,7 +41,7 @@ jobs:
       - name: run tests
         run: |
           cd src 
-          dotnet test Horarium.Test/Horarium.Test.csproj -c Release --no-restore
+          dotnet test Horarium.Test/Horarium.Test.csproj -c Release --logger trx --results-directory "TestResults-2.2"
       - name: run MongoDB tests
         run: |
           cd src 
@@ -50,6 +50,14 @@ jobs:
         run: |
           cd src 
           DataBase=Memory dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj -c Release --no-restore
+      - name: Upload dotnet test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: dotnet-results-2.2
+          path: TestResults-2.2
+        # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}
+        
           
   pack:
     needs: [build,test]
