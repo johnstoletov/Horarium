@@ -59,18 +59,18 @@ jobs:
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '2.2.x' # SDK Version to use.
-      - name: pack horarium
+      - name: pack Horarium
         run: |
           cd src
           dotnet pack Horarium/Horarium.csproj -c Release  /p:PackageVersion=v1.1.2
-      - name: pack horarium
+      - name: pack Horarium.Mongo
         run: |
           cd src
           dotnet pack Horarium.Mongo/Horarium.Mongo.csproj -c Release  /p:PackageVersion=v1.1.2
-      - name: pack horarium
-          run: |
-            cd src
-            dotnet pack Horarium.AspNetCore/Horarium.AspNetCore.csproj -c Release  /p:PackageVersion=v1.1.2
+      - name: pack Horarium.AspNetCore
+        run: |
+          cd src
+          dotnet pack Horarium.AspNetCore/Horarium.AspNetCore.csproj -c Release  /p:PackageVersion=v1.1.2
             
   publish:
     needs: [ build,test,pack ]
@@ -81,9 +81,9 @@ jobs:
         with:
           dotnet-version: '2.2.x' # SDK Version to use.
       - name: ls packs
-          run: |
-            cd src/Horarium
-            ls -a
+        run: |
+          cd src/Horarium
+          ls -a
       - name: publish
         run: |
           cd src
