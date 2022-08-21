@@ -1,23 +1,7 @@
-name: GitHub Actions Demo
-on: [push]
+name: Build
+on: pull_request
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: '2.2.x' # SDK Version to use.
-      - name: dotnet build
-        run: |
-          cd src 
-          dotnet build Horarium.sln -c Release
-      - name: ls
-        run: |
-          ls -a
-          
-  test:
-    needs: [build]
     runs-on: ubuntu-latest
     services:
       mongodb:
@@ -26,41 +10,31 @@ jobs:
           - 27017:27017
     steps:
       - uses: actions/checkout@v3
-      - name: check mongo
-        run: |
-          sleep 5
-          mongo --host localhost --eval "db.version()"
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '2.2.x' # SDK Version to use.
         env:
           MONGO_ADDRESS: localhost
-      - name: ls
-        run: |
-            ls -a
-      - name: run tests
+      - name: build
         run: |
           cd src 
+          dotnet build Horarium.sln -c Release
+      - name: check mongo
+        run: |
+          sleep 5
+          mongo --host localhost --eval "db.version()"
+      - name: run unit tests
+        run: |
           dotnet test Horarium.Test/Horarium.Test.csproj -c Release --logger trx --results-directory "TestResults-2.2"
-      - name: run MongoDB tests
+      - name: run MongoDB integration tests
         run: |
-          cd src 
           DataBase=MongoDB dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj -c Release --no-restore
-      - name: run InMemory tests
+      - name: run InMemory integration tests
         run: |
-          cd src 
-          DataBase=Memory dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj -c Release --no-restore
-      - name: Upload dotnet test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: dotnet-results-2.2
-          path: src/Horarium.Test
-        # Use always() to always run this step to publish test results when there are test failures
-        if: ${{ always() }}
-        
+          DataBase=Memory dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj -c Release --no-restore       
           
-  pack:
-    needs: [build,test]
+  deploy:
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -79,19 +53,6 @@ jobs:
         run: |
           cd src
           dotnet pack Horarium.AspNetCore/Horarium.AspNetCore.csproj -c Release  /p:PackageVersion=1.1.2
-            
-  publish:
-    needs: [ build,test,pack ]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: '2.2.x' # SDK Version to use.
-      - name: ls packs
-        run: |
-          cd src/Horarium
-          ls -a
       - name: publish
         run: |
           cd src
