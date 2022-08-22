@@ -1,8 +1,7 @@
 name: Deploy
 
 on:
-  - push
-  - release:
+  release:
     types: [released]
 
 jobs:
