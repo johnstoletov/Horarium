@@ -11,6 +11,7 @@ jobs:
         ports:
           - 27017:27017
     steps:
+      - run: echo "new workflow"
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v2
         with:
