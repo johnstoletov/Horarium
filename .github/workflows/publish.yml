@@ -1,16 +1,43 @@
 name: Deploy
 
-on: 
+on:
   release:
     types: [released]
 
 jobs:
-  printJob:
-    name: Print event
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Dump GitHub context
+      - uses: ./.github/workflows/build
+        name: build
+
+  deploy:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '2.2.x' # SDK Version to use.
+      - name: prepare version
         env:
           VERSION: ${{ github.event.release.tag_name }}
         run: |
           echo "$VERSION"
+      - name: pack Horarium
+        run: |
+          cd src
+          dotnet pack Horarium/Horarium.csproj -c Release  /p:PackageVersion=$VERSION
+      - name: pack Horarium.Mongo
+        run: |
+          cd src
+          dotnet pack Horarium.Mongo/Horarium.Mongo.csproj -c Release  /p:PackageVersion=$VERSION
+      - name: pack Horarium.AspNetCore
+        run: |
+          cd src
+          dotnet pack Horarium.AspNetCore/Horarium.AspNetCore.csproj -c Release  /p:PackageVersion=$VERSION
+      - name: publish
+        run: |
+          cd src
+          dotnet nuget push **/Horarium.*.nupkg -k ${{secrets.GITHUB_TOKEN}} -s https://www.nuget.org
