@@ -1,6 +1,6 @@
 # Horarium
 
-[![Build](https://github.com/Tinkoff/Horarium/actions/workflows/build.yml/badge.svg)](https://github.com/Tinkoff/Horarium/actions/workflows/build.yml)
+[![Build](https://github.com/johnstoletov/Horarium/actions/workflows/build.yml/badge.svg)](https://github.com/johnstoletov/Horarium/actions/workflows/build.yml)
 [![Nuget](https://img.shields.io/nuget/v/Horarium.svg)](https://www.nuget.org/packages/Horarium)
 
 Horarium is an open source job scheduling .NET library with an easy to use API, that can be integrated within applications of any scale - from the smallest stand-alone application to the largest e-commerce system.
