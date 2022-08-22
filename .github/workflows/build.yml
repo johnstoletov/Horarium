@@ -25,7 +25,7 @@ jobs:
           sleep 5
           mongo --host localhost --eval "db.version()"
       - name: run unit tests
-        run: |  
+        run: |
           dotnet test src/Horarium.Test/Horarium.Test.csproj -c Release --no-restore
       - name: run MongoDB integration tests
         run: |
