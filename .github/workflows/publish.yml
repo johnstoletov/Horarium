@@ -5,11 +5,10 @@ on:
     types: [released]
 
 jobs:
-  build:
+  Build:
     uses: ./.github/workflows/build.yml
-    name: Build
-
-  deploy:
+    
+  Deploy:
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
