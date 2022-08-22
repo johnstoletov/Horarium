@@ -9,7 +9,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/build
+      - uses: ./.github/workflows/build.ymll
         name: build
 
   deploy:
