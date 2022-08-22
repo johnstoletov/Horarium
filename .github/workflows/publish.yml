@@ -5,10 +5,10 @@ on:
     types: [released]
 
 jobs:
-  Build:
+  build:
     uses: ./.github/workflows/build.yml
     
-  Deploy:
+  deploy:
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
@@ -16,9 +16,9 @@ jobs:
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '2.2.x' # SDK Version to use.
+          env:
+            VERSION: ${{ github.event.release.tag_name }}
       - name: prepare version
-        env:
-          VERSION: ${{ github.event.release.tag_name }}
         run: |
           echo "$VERSION"
       - name: pack Horarium
