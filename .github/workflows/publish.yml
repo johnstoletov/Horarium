@@ -1,8 +1,9 @@
 name: Deploy
 
 on:
+  push:
   release:
-    types: [released, push]
+    types: [released]
 
 jobs:
   build:
@@ -11,8 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
+          cd .github
           ls -a
-      - uses: ./.github/workflows/build.yml
+      - uses: .github/workflows/build.yml
         name: build
 
   deploy:
