@@ -23,7 +23,7 @@ jobs:
       - name: prepare version
         env:
           VERSION: ${{ github.event.release.tag_name }}
-        -run: |
+      - run: |
           echo "$VERSION"
       - name: pack Horarium
         run: |
