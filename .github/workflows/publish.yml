@@ -11,13 +11,13 @@ jobs:
   deploy:
     needs: [ build ]
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ github.event.release.tag_name }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '2.2.x' # SDK Version to use.
-          env:
-            VERSION: ${{ github.event.release.tag_name }}
       - name: prepare version
         run: |
           echo "$VERSION"
