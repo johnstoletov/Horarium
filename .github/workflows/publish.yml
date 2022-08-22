@@ -25,16 +25,16 @@ jobs:
       - name: pack Horarium
         run: |
           cd src
-          dotnet pack Horarium/Horarium.csproj -c Release  /p:PackageVersion=$VERSION
+          dotnet pack Horarium/Horarium.csproj -c Release  /p:PackageVersion=${{env.VERSION}}
       - name: pack Horarium.Mongo
         run: |
           cd src
-          dotnet pack Horarium.Mongo/Horarium.Mongo.csproj -c Release  /p:PackageVersion=$VERSION
+          dotnet pack Horarium.Mongo/Horarium.Mongo.csproj -c Release  /p:PackageVersion=${{env.VERSION}}
       - name: pack Horarium.AspNetCore
         run: |
           cd src
-          dotnet pack Horarium.AspNetCore/Horarium.AspNetCore.csproj -c Release  /p:PackageVersion=$VERSION
+          dotnet pack Horarium.AspNetCore/Horarium.AspNetCore.csproj -c Release  /p:PackageVersion=${{env.VERSION}}
       - name: publish
         run: |
           cd src
-          dotnet nuget push **/Horarium.*.nupkg -k ${{secrets.GITHUB_TOKEN}} -s https://www.nuget.org
+          dotnet nuget push **/Horarium.*.nupkg -k ${{secrets.NUGET_APIKEY}} -s https://www.nuget.org
