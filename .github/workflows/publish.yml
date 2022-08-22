@@ -6,15 +6,8 @@ on:
 
 jobs:
   build:
+    uses: ./.github/workflows/build.yml
     name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          cd .github/workflows/
-          ls -a
-      - uses: ./.github/workflows/build.yml
-        name: build
 
   deploy:
     needs: [ build ]
