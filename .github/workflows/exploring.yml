@@ -17,21 +17,20 @@ jobs:
           MONGO_ADDRESS: localhost
       - name: build
         run: |
-          cd src 
-          dotnet build Horarium.sln -c Release
+          dotnet build src/Horarium.sln -c Release
       - name: check mongo
         run: |
           sleep 5
           mongo --host localhost --eval "db.version()"
       - name: run unit tests
-        run: |
-          dotnet test Horarium.Test/Horarium.Test.csproj -c Release --logger trx --results-directory "TestResults-2.2"
+        run: |  
+          dotnet test src/Horarium.Test/Horarium.Test.csproj -c Release --no-restore
       - name: run MongoDB integration tests
         run: |
-          DataBase=MongoDB dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj -c Release --no-restore
+          DataBase=MongoDB dotnet test src/Horarium.IntegrationTest/Horarium.IntegrationTest.csproj -c Release --no-restore
       - name: run InMemory integration tests
         run: |
-          DataBase=Memory dotnet test Horarium.IntegrationTest/Horarium.IntegrationTest.csproj -c Release --no-restore       
+          DataBase=Memory dotnet test src/Horarium.IntegrationTest/Horarium.IntegrationTest.csproj -c Release --no-restore       
           
   deploy:
     needs: [build]
