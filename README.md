@@ -259,4 +259,3 @@ new HorariumSettings
     MaxRepeatCount = 1
 });
 ```
-
