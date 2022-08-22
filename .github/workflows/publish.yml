@@ -1,20 +1,14 @@
-name: Pack new version
+name: Deploy
 
-on:
-  push:
-    branches:
-      - master
+on: release
 
 jobs:
-  build:
+  printJob:
+    name: Print event
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: '2.2.x' # SDK Version to use.
+      - name: Dump GitHub context
         env:
-          NUGET_APIKEY: ${{secrets.NUGET_APIKEY}}
-      - run: |
-          cd src 
-          dotnet build Horarium.sln -c Release
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
